@@ -7,7 +7,6 @@ type site struct {
 
 func (s *site) Scan() (map[string]string, error) {
 	data := map[string]string{
-		"https://go.dev//about":                 "About - go.dev",
 		"https://go.dev/":                       "go.dev",
 		"https://go.dev/solutions":              "Why Go - go.dev",
 		"https://go.dev/about":                  "About - go.dev",

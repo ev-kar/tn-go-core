@@ -23,6 +23,10 @@ func (s *site) Scan() (map[string]string, error) {
 	return spider.Scan(s.url, s.depth)
 }
 
+func scan(s Scanner) (map[string]string, error) {
+	return s.Scan()
+}
+
 func main() {
 	mySites := []site{
 		{url: "https://go.dev/", depth: 3},
@@ -31,7 +35,7 @@ func main() {
 
 	data := make(map[string]string)
 	for _, mySite := range mySites {
-		nextData, err := mySite.Scan()
+		nextData, err := scan(&mySite)
 		if err != nil {
 			fmt.Println("ошибка при сканировании сайта", mySite.url, err)
 			return
