@@ -1,19 +1,13 @@
 package mock
 
-type site struct {
-	url   string
-	depth int
-}
+// SiteScanner - сканер-заглушка
+type SiteScanner func(string, int)
 
-func (s *site) Scan() (map[string]string, error) {
-	data := map[string]string{
-		"https://go.dev/":                       "go.dev",
-		"https://go.dev/solutions":              "Why Go - go.dev",
-		"https://go.dev/about":                  "About - go.dev",
-		"https://go.dev/solutions#use-cases":    "Why Go - go.dev",
-		"https://go.dev/solutions#case-studies": "Why Go - go.dev",
-		"https://go.dev/learn":                  "Getting Started - go.dev",
-		"https://golang.org/":                   "The Go Programming Language",
+// Scan - метод-заглушка, возвращающий жестко закодированные данные
+func (s SiteScanner) Scan(url string, depth int) (data map[string]string, err error) {
+	data = map[string]string{
+		"https://go.dev/":     "go.dev",
+		"https://golang.org/": "The Go Programming Language",
 	}
 	return data, nil
 }

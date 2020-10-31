@@ -11,38 +11,41 @@ import (
 
 // Scanner interface
 type Scanner interface {
-	Scan() (map[string]string, error)
+	Scan(url string, depth int) (map[string]string, error)
 }
 
-type site struct {
-	url   string
-	depth int
-}
+type siteScanner func(string, int)
 
-func (s *site) Scan() (map[string]string, error) {
-	return spider.Scan(s.url, s.depth)
-}
-
-func scan(s Scanner) (map[string]string, error) {
-	return s.Scan()
-}
-
-func main() {
-	mySites := []site{
-		{url: "https://go.dev/", depth: 3},
-		{url: "https://golang.org/", depth: 3},
+func (s siteScanner) Scan(url string, depth int) (data map[string]string, err error) {
+	data, err = spider.Scan(url, depth)
+	if err != nil {
+		return nil, err
 	}
+	return data, nil
+}
 
+func run(s Scanner, urls []string, depth int) (map[string]string, error) {
 	data := make(map[string]string)
-	for _, mySite := range mySites {
-		nextData, err := scan(&mySite)
+	for _, u := range urls {
+		nextData, err := s.Scan(u, depth)
 		if err != nil {
-			fmt.Println("ошибка при сканировании сайта", mySite.url, err)
-			return
+			return nil, err
 		}
 		for k, v := range nextData {
 			data[k] = v
 		}
+	}
+	return data, nil
+}
+
+func main() {
+	urls := []string{"https://go.dev/", "https://golang.org/"}
+	const depth int = 2
+	var s siteScanner
+	data, err := run(s, urls, depth)
+	if err != nil {
+		fmt.Println("ошибка при сканировании сайта", err)
+		return
 	}
 
 	scanner := bufio.NewScanner(os.Stdin)
